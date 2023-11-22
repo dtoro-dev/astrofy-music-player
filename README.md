@@ -3,7 +3,7 @@
 <div style="display: flex; gap: 20px; margin-bottom: 30px;">
   <img src="./public/favicon.png" alt="Logo Astrofy" width="200" height="auto" />
   <p align="justify">
-    Astrofy es el un clon de Spotify, que contiene música libre de royalty. Esta construido con Astro fusionando componentes Astro, React (JSX & TSX) y Svelte, para el diseño se utilizo TailwindCSS y para el manejo del estado con Zustand, el cual es totalmente agnóstico entre los tres framework utilizados, permitiendo la persistencia y compatibilidad del estado en todos los componentes.
+    Astrofy es un clon de Spotify, pero con una biblioteca musical que destaca por su contenido libre de regalías y derechos. Su arquitectura se basa en una combinación tecnológica sólida: fusiona los elementos de Astro, React (JSX & TSX) y Svelte para garantizar una experiencia integral. Para su diseño, hace uso de TailwindCSS, mientras que para la gestión del estado, recurre a Zustand, una herramienta versátil que se muestra completamente independiente y compatible con los tres frameworks empleados. La integración de Zustand asegura la persistencia del estado a lo largo de todos los componentes, lo que potencia la coherencia y la compatibilidad del sistema en su conjunto.
   </p>
 </div>
 
