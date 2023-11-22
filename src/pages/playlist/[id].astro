@@ -1,0 +1,160 @@
+---
+import MusicTable from "@/components/astro/MusicTable.astro";
+import CardPlayButton from "@/components/react/CardPlayButton";
+import { Heart } from "@/icons/react";
+import Layout from "@/layouts/Layout.astro";
+import { allPlaylists, songs } from "@/lib/data";
+import { formatTime } from "@/utils/format";
+
+const { id } = Astro.params;
+
+const playlist = allPlaylists.find((playlist) => playlist.id === id);
+const playlistSongs = songs.filter(
+  (song) => song.albumId === playlist?.albumId
+);
+
+const durationPlaylist = playlistSongs.map((song) => {
+  const [minutes, seconds] = song.duration.split(":");
+
+  return parseInt(minutes) * 60 + parseInt(seconds);
+});
+
+const roundDuration = (durationInSeconds: number) => {
+  const durationInMinutes = durationInSeconds / 60;
+  const roundedDuration = Math.round(durationInMinutes);
+  return roundedDuration;
+};
+
+const totalDurationInSeconds = durationPlaylist.reduce((a, b) => a + b, 0);
+const roundedDuration = roundDuration(totalDurationInSeconds);
+---
+
+<Layout title="Astrofy Music">
+  <div
+    id="playlist-container"
+    class="relative flex flex-col h-full bg-zinc-900 overflow-x-hidden"
+    transition:name=`playlist ${id} box`
+  >
+    <div
+      class=`inset-0 -z-[1] height-[100vh]`
+      style={{
+        backgroundImage: `linear-gradient(180deg, ${playlist?.color?.accent} 5%, ${playlist?.color?.dark} 35%, ${playlist?.color?.dark} 90%, ${playlist?.color?.accent} 99.9%)`,
+      }}
+    >
+      <!-- <PageHeader /> -->
+      <header class="flex flex-row gap-8 px-6 mt-12">
+        <picture class="aspect-square w-52 h-52 flex-none">
+          <img
+            src={playlist?.cover}
+            alt={`Cover of ${playlist?.title} by ${playlist?.artists.join(
+              ", "
+            )}`}
+            class="object-cover w-full h-full shadow-lg"
+            transition:name=`playlist ${playlist?.id} image`
+          />
+        </picture>
+        <div class="flex flex-col justify-between">
+          <h2 class="flex flex-1 items-end">Playlist</h2>
+          <div>
+            <h1 class="text-5xl font-bold block text-white">
+              {playlist?.title}
+              <span transition:name=`playlist ${playlist?.id} title`></span>
+            </h1>
+          </div>
+
+          <div class="flex-1 flex items-end">
+            <div class="text-sm text-gray-300 font-normal">
+              <div transition:name=`playlist ${playlist?.id} artists`>
+                <span>{playlist?.artists.join(", ")}</span>
+              </div>
+              <p class="mt-1 flex gap-2">
+                <img
+                  src="/favicon.png"
+                  alt="Astrofy Music Player Logo"
+                  class="w-5 h-5"
+                />
+                <span class="text-white"
+                  >{playlistSongs.length} canciones
+                  {
+                    playlistSongs.length
+                      ? roundedDuration > 60
+                        ? `, ${roundedDuration / 60} horas aproximadamente`
+                        : `, ${roundedDuration} minutos aproximadamente`
+                      : null
+                  }
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {
+        playlistSongs.length ? (
+          <>
+            <div class="flex gap-5 mx-7 mt-5">
+              <CardPlayButton id={playlist?.id} client:load />
+              <button class="opacity-70 hover:opacity-100 transition">
+                <Heart className="w-6 h-6" />
+              </button>
+            </div>
+            <section class="p-6 divide-y-2 divide-gray-500/50">
+              <MusicTable songs={playlistSongs} />
+            </section>
+          </>
+        ) : null
+      }
+
+      <footer class="divide-y-2 divide-gray-500/50">
+        <div class="flex justify-between p-16">
+          <div class="flex gap-24">
+            <ul class="flex flex-col gap-1">
+              <li class="font-bold text-2xl">Compañia</li>
+              <li class="text-gray-200/60 text-lg font-semibold">Acerca de</li>
+              <li class="text-gray-200/60 text-lg font-semibold">Empleo</li>
+              <li class="text-gray-200/60 text-lg font-semibold">
+                For the Record
+              </li>
+            </ul>
+            <ul>
+              <li class="font-bold text-2xl">Comunidades</li>
+              <li class="text-gray-200/60 text-lg font-semibold">
+                Para artistas
+              </li>
+              <li class="text-gray-200/60 text-lg font-semibold">
+                Desarrolladores
+              </li>
+              <li class="text-gray-200/60 text-lg font-semibold">Publicidad</li>
+              <li class="text-gray-200/60 text-lg font-semibold">
+                Inversionistas
+              </li>
+              <li class="text-gray-200/60 text-lg font-semibold">
+                Proveedores
+              </li>
+            </ul>
+            <ul>
+              <li class="font-bold text-2xl">Enlaces útiles</li>
+              <li class="text-gray-200/60 text-lg font-semibold">Ayuda</li>
+              <li class="text-gray-200/60 text-lg font-semibold">
+                App móvil gratis
+              </li>
+            </ul>
+          </div>
+          <div>asdad</div>
+        </div>
+        <div class="flex justify-between items-center p-5">
+          <ul class="flex gap-10 p-5">
+            <li class="text-gray-200 text-md">Legal</li>
+            <li class="text-gray-200 text-md">Centro de privacidad</li>
+            <li class="text-gray-200 text-md">Política de Privacidad</li>
+            <li class="text-gray-200 text-md">Cookies</li>
+            <li class="text-gray-200 text-md">Sobre los anuncios</li>
+            <li class="text-gray-200 text-md">Accesibilidad</li>
+          </ul>
+
+          <p>© 2023 Astrofy Music Player</p>
+        </div>
+      </footer>
+    </div>
+  </div>
+</Layout>
